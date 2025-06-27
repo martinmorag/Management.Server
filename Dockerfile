@@ -8,19 +8,10 @@ EXPOSE 8080
 EXPOSE 8081
 
 
-# Esta fase se usa para compilar el proyecto de servicio
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS with-node
-RUN apt-get update
-RUN apt-get install curl
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash
-RUN apt-get -y install nodejs
-RUN npm install -g @angular/cli
-
-FROM with-node AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["Management.Server/Management.Server.csproj", "Management.Server/"]
-COPY ["management.client/management.client.esproj", "management.client/"]
 RUN dotnet restore "./Management.Server/Management.Server.csproj"
 COPY . .
 WORKDIR "/src/Management.Server"
